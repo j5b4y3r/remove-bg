@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import { Button, Typography } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 import imglyRemoveBackground from '@imgly/background-removal';
-import Image from "next/image";
+
 
 const BackgroundRemoval: React.FC = () => {
     const [image, setImage] = useState<string | null>(null);
@@ -153,7 +153,7 @@ const BackgroundRemoval: React.FC = () => {
                         >
                             Download
                         </button>
-                        <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop([e.target.files])}/>
+                        <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop(e.target.files)}/>
                         <button
                             color="primary"
                             onClick={handleUploadNewImage}
