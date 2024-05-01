@@ -31,3 +31,23 @@ body {
     text-wrap: balance;
   }
 }
+
+button{
+  background-color: yellowgreen;
+  color: white;
+  padding: 16px;
+  margin: 8px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition:  0.3s;
+}
+button:hover {
+  background-color: yellowgreen;
+  color: white;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.2);
+  transition: transfrom 0.2s;
+}
+button:focus {
+  background-color: green;
+}

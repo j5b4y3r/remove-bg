@@ -1,7 +1,7 @@
 // components/BackgroundRemoval.tsx
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Typography } from '@material-ui/core';
+// import { Button, Typography } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 import imglyRemoveBackground from '@imgly/background-removal';
 
@@ -101,12 +101,12 @@ const BackgroundRemoval: React.FC = () => {
                                 }}
                             >
                                 <input {...getInputProps()} style={{display: 'none'}}/>
-                                <Typography variant="body1" style={{ color: '#666', marginBottom: '10px' }}>
+                                <p style={{ color: '#666', marginBottom: '10px' }}>
                                     Drag & drop an image here, or click to select an image
-                                </Typography>
-                                <Button variant="contained" color="primary" style={{ marginBottom: '10px' }}>
+                                </p>
+                                <button color="primary" style={{ marginBottom: '10px' }}>
                                     Upload Image
-                                </Button>
+                                </button>
                             </div>
                         </section>
                     )}
@@ -140,8 +140,7 @@ const BackgroundRemoval: React.FC = () => {
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <img src={resultImage} alt="Result" style={{border: '1px solid black', maxWidth: '100%', maxHeight: '300px' }} />
                     <div style={{marginTop: '16px'}}>
-                        <Button
-                            variant="contained"
+                        <button
                             color="primary"
                             onClick={handleDownload}
                             style={{
@@ -152,24 +151,23 @@ const BackgroundRemoval: React.FC = () => {
                             }}
                         >
                             Download
-                        </Button>
+                        </button>
                         <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop(e.target.files)}/>
-                        <Button
-                            variant="contained"
+                        <button
                             color="primary"
                             onClick={handleUploadNewImage}
                             style={{textTransform: 'none', borderRadius: '999px', padding: '12px 24px'}}
                         >
                             Upload New Image
-                        </Button>
+                        </button>
                     </div>
                 </div>
             )}
             {processing && (
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <Typography variant="body1" style={{ color: '#666', marginBottom: '10px' }}>
+                    <p style={{ color: '#666', marginBottom: '10px' }}>
                         {getElapsedTime()}
-                    </Typography>
+                    </p>
                 </div>
             )}
             <style>
