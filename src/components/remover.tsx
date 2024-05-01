@@ -132,13 +132,13 @@ const BackgroundRemoval: React.FC = () => {
                     <img ref={uploadedImg}
                         src={image}
                         alt="Uploaded"
-                        style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '0', border: '1px solid gray', zIndex: 0 }}
+                        style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '0', border: '1px solid black', zIndex: 0 }}
                     />
                 </div>
             )}
             {resultImage && (
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <img src={resultImage} alt="Result" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                    <img src={resultImage} alt="Result" style={{border: '1px solid black', maxWidth: '100%', maxHeight: '300px' }} />
                     <div style={{marginTop: '16px'}}>
                         <Button
                             variant="contained"
