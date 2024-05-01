@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import { Button, Typography } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 import imglyRemoveBackground from '@imgly/background-removal';
+import Image from "next/image";
 
 const BackgroundRemoval: React.FC = () => {
     const [image, setImage] = useState<string | null>(null);
@@ -13,14 +14,14 @@ const BackgroundRemoval: React.FC = () => {
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const imageRef = useRef<HTMLInputElement | null>(null);
     const uploadedImg = useRef<HTMLImageElement | null>(null);
-    const [fileSize, setFileSize] = useState<number | null>(null);
+    const [fileSize, setFileSize] = useState<number>(0);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
         if (startTime) {
             interval = setInterval(() => {
                 const elapsedTimeInSeconds = (Date.now() - startTime) / 1000;
-                setElapsedTime(elapsedTimeInSeconds.toFixed(1));
+                setElapsedTime(parseFloat(elapsedTimeInSeconds.toFixed(1)));
             }, 10);
         }
         return () => clearInterval(interval);
@@ -113,7 +114,7 @@ const BackgroundRemoval: React.FC = () => {
                 </Dropzone>
             )}
             {image && !resultImage && (
-                <div style={{ position: 'relative', textAlign: 'center', marginTop: '20px' }}>
+                <div style={{justifyContent: 'center', position: 'relative', textAlign: 'center', marginTop: '20px', width: '100%', height: '100%' }}>
 
                     <div
                         style={{
@@ -137,7 +138,7 @@ const BackgroundRemoval: React.FC = () => {
                 </div>
             )}
             {resultImage && (
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <div style={{justifyContent: "center", textAlign: 'center', marginTop: '20px', width: '100%', height: '100%' }}>
                     <img src={resultImage} alt="Result" style={{border: '1px solid black', maxWidth: '100%', maxHeight: '300px' }} />
                     <div style={{marginTop: '16px'}}>
                         <button
@@ -152,7 +153,7 @@ const BackgroundRemoval: React.FC = () => {
                         >
                             Download
                         </button>
-                        <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop(e.target.files)}/>
+                        <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop([e.target.files])}/>
                         <button
                             color="primary"
                             onClick={handleUploadNewImage}
