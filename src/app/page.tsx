@@ -1,10 +1,12 @@
 import Image from "next/image";
-import BackgroundRemoval from "@/components/remover";
+import Main from "@/components/main";
+import Header from "@/components/common/header";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <BackgroundRemoval/>
-    </main>
+    <>
+        <Header/>
+        <Main/>
+    </>
   );
 }
