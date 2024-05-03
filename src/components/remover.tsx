@@ -1,10 +1,8 @@
-// components/BackgroundRemoval.tsx
+
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-// import { Button, Typography } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 import imglyRemoveBackground from '@imgly/background-removal';
-
 
 const BackgroundRemoval: React.FC = () => {
     const [image, setImage] = useState<string | null>(null);
@@ -15,6 +13,7 @@ const BackgroundRemoval: React.FC = () => {
     const imageRef = useRef<HTMLInputElement | null>(null);
     const uploadedImg = useRef<HTMLImageElement | null>(null);
     const [fileSize, setFileSize] = useState<number>(0);
+    const [showUploadSection, setShowUploadSection] = useState<boolean>(true);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -27,13 +26,12 @@ const BackgroundRemoval: React.FC = () => {
         return () => clearInterval(interval);
     }, [startTime]);
 
-
     const handleDrop = async (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         setImage(URL.createObjectURL(file));
         setResultImage(null);
         setFileSize(file.size);
-        console.log(fileSize)
+        setShowUploadSection(false);
         await removeBackground(file);
     };
 
@@ -41,9 +39,7 @@ const BackgroundRemoval: React.FC = () => {
         try {
             setProcessing(true);
             setStartTime(Date.now());
-            console.log("Processing Image");
             const blob = await imglyRemoveBackground(URL.createObjectURL(file));
-            console.log("Process Complete");
             setResultImage(URL.createObjectURL(blob));
         } catch (error) {
             console.error('Error removing background:', error);
@@ -66,10 +62,6 @@ const BackgroundRemoval: React.FC = () => {
         if (imageRef.current) {
             imageRef.current.click();
         }
-        else {
-            console.log(document.querySelector('#image'))
-        }
-        console.log(imageRef)
     };
 
     const getElapsedTime = () => {
@@ -78,99 +70,83 @@ const BackgroundRemoval: React.FC = () => {
     };
 
     return (
-        <div>
-            {!resultImage && (
-                <Dropzone onDrop={handleDrop}>
-                    {({ getRootProps, getInputProps }) => (
-                        <section style={{ display: image ? 'none' : 'block' }}>
-                            <div
+        <div className="flex flex-col items-center justify-center">
+            <div className="w-full min-w-1 max-w-lg p-6 bg-white rounded-lg shadow-md">
+                {showUploadSection && (
+                    <Dropzone onDrop={handleDrop}>
+                        {({ getRootProps, getInputProps }) => (
+                            <section
+                                className="w-full h-96 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 mb-6"
+                                style={{ minHeight: '400px' }}
                                 {...getRootProps()}
-                                style={{
-                                    width: '300px',
-                                    height: '300px',
-                                    margin: '20px auto',
-                                    borderRadius: '20px',
-                                    padding: '20px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    backgroundColor: '#fff',
-                                    border: '2px dashed #ddd',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
                             >
                                 <input {...getInputProps()} style={{display: 'none'}}/>
-                                <p style={{ color: '#666', marginBottom: '10px' }}>
-                                    Drag & drop an image here, or click to select an image
-                                </p>
-                                <button color="primary" style={{ marginBottom: '10px' }}>
-                                    Upload Image
-                                </button>
-                            </div>
-                        </section>
-                    )}
-                </Dropzone>
-            )}
-            {image && !resultImage && (
-                <div style={{justifyContent: 'center', position: 'relative', textAlign: 'center', marginTop: '20px', width: '100%', height: '100%' }}>
-
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: '-2px',
-                            left: 0,
-                            width: '100%',
-                            height: '2px',
-                            backgroundColor: '#f6c57c',
-                            borderRadius: '0',
-                            zIndex: 2,
-                            animation: 'scanner 4s linear infinite',
-                            boxShadow: '0px 0px 10px 5px #FFB74D',
-                        }}
-                    ></div>
-                    <img ref={uploadedImg}
-                        src={image}
-                        alt="Uploaded"
-                        style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '0', border: '1px solid black', zIndex: 0 }}
-                    />
-                </div>
-            )}
-            {resultImage && (
-                <div style={{justifyContent: "center", textAlign: 'center', marginTop: '20px', width: '100%', height: '100%' }}>
-                    <img src={resultImage} alt="Result" style={{border: '1px solid black', maxWidth: '100%', maxHeight: '300px' }} />
-                    <div style={{marginTop: '16px'}}>
-                        <button
-                            color="primary"
-                            onClick={handleDownload}
-                            style={{
-                                textTransform: 'none',
-                                borderRadius: '999px',
-                                padding: '12px 24px',
-                                marginRight: '10px'
-                            }}
-                        >
-                            Download
-                        </button>
-                        <input id='image' ref={imageRef} type='file' style={{display: 'none'}} onChange={(e) => handleDrop(e.target.files)}/>
-                        <button
-                            color="primary"
-                            onClick={handleUploadNewImage}
-                            style={{textTransform: 'none', borderRadius: '999px', padding: '12px 24px'}}
-                        >
-                            Upload New Image
-                        </button>
+                                <p className="text-gray-600">Drag & drop an image here, or click to select an image</p>
+                                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out">Upload Image</button>
+                            </section>
+                        )}
+                    </Dropzone>
+                )}
+                {image && !resultImage && (
+                    <div style={{minWidth: "450px", opacity: "0.7", backgroundColor: 'black'}} className="w-full min-w-10 h-96 relative flex justify-center items-center border-2 border-gray-300 rounded-lg p-6 mb-6">
+                        <article
+                            style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+                            <svg className="animate-spin h-10 w-10 mr-3 text-blue-500"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </article>
+                        <img
+                            ref={uploadedImg}
+                            src={image}
+                            alt="Uploaded"
+                            className="max-w-full max-h-full"
+                        />
+                        <div className="absolute w-full h-full border-2 border-yellow-400 animate-scanner"></div>
                     </div>
-                </div>
-            )}
-            {processing && (
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <p style={{ color: '#666', marginBottom: '10px' }}>
-                        {getElapsedTime()}
-                    </p>
-                </div>
-            )}
+                )}
+                {resultImage && (
+                    <div style={{minWidth: '450px'}}>
+                    <div
+                            className="w-full h-96 relative flex flex-col justify-center items-center border-2 border-gray-300 rounded-lg p-6 mb-6">
+                            <img
+                                src={resultImage}
+                                alt="Result"
+                                className="max-w-full max-h-full"
+                            />
+                        </div>
+                        <div className="mt-4 justify-end text-end">
+                            <input
+                                id="image"
+                                ref={imageRef}
+                                type="file"
+                                style={{display: 'none'}}
+                                onChange={(e) => handleDrop(Array.from(e.target.files || []))}
+                            />
+                            <button
+                                onClick={handleUploadNewImage}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md ml-2 hover:bg-gray-400 transition duration-300 ease-in-out"
+                            >
+                                Upload New Image
+                            </button>
+                            <button
+                                onClick={handleDownload}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md mr-2 hover:bg-blue-600 transition duration-300 ease-in-out"
+                            >
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                )}
+                {processing && (
+                    <div className="text-center mt-6">
+                        <p className="text-gray-600">{getElapsedTime()}</p>
+                    </div>
+                )}
+            </div>
             <style>
                 {`
                     @keyframes scanner {
