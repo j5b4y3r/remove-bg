@@ -28,6 +28,17 @@ const BackgroundRemoval: React.FC = () => {
         return () => clearInterval(interval);
     }, [showPopup]);
 
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (startTime) {
+            interval = setInterval(() => {
+                const elapsedTimeInSeconds = (Date.now() - startTime) / 1000;
+                setElapsedTime(parseFloat(elapsedTimeInSeconds.toFixed(1)));
+            }, 10);
+        }
+        return () => clearInterval(interval);
+    }, [startTime]);
+
     const handleDrop = async (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file.type.split("/")[0] !== "image") {
@@ -79,12 +90,12 @@ const BackgroundRemoval: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center">
             {showPopup && (
-                <div className={`fixed top-10 -right-50 transition-all duration-500 ${showPopupBorder ? 'right-1' : ''}`}>
+                <div className={`fixed top-16 -right-50 transition-all duration-500 ${showPopupBorder ? 'right-1' : ''}`}>
                     <div className="bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 p-4 mb-4 text-yellow-800 rounded-lg flex items-center relative">
                         <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                         </svg>
-                        <span className="sr-only">Info</span>
+                        <span className="sr-only">Warning</span>
                         <div className="ms-3 text-sm font-medium">
                             Please upload an image file.
                         </div>

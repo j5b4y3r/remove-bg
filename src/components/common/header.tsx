@@ -31,8 +31,8 @@ const Header = () => {
                             <span className="text-yellow-600">V</span>
                         </div>
 
-                        <div className="ms-7 hidden md:flex">
-                            <span className="text-white font-bold text-2xl">Background Remover</span>
+                        <div className="ms-7 md:flex">
+                            <span className="text-white font-bold text-2xl md:text-xl">Background Remover</span>
                         </div>
                     </div>
 
@@ -50,9 +50,6 @@ const Header = () => {
 
             <div
                 className={`container mx-auto ${isMobileMenuOpen ? 'block' : 'hidden'} z-10 fixed md:hidden bg-gray-800 py-4`}>
-                <div className=" text-center">
-                    <span className="text-white font-bold text-2xl">Background Remover</span>
-                </div>
                 <div className="flex flex-col items-center mt-4">
                     <a href="https://themexpert.com/" className="text-white hover:text-gray-400">Home</a>
                     <a href="https://signgen.netlify.app/" className="text-white hover:text-gray-400 mt-2">Signature Generator</a>
