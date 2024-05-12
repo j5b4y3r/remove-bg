@@ -229,3 +229,22 @@ button:focus {
 
 
 
+#bc{
+  left: -10px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transform: translate(calc(-50% + 12px), calc(-50% + 12px));
+}
+#bc:hover {
+  width: 75px;
+  height: 75px;
+  cursor: grab;
+}
+#arrow{
+  position: absolute;
+  font-size: xxx-large;
+  padding: 20px;
+  transform: translate(calc(-50% + 22px), calc(-50% + 20px));
+}

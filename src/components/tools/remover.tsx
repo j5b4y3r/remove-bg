@@ -15,6 +15,27 @@ const BackgroundRemoval: React.FC = () => {
     const [showUploadSection, setShowUploadSection] = useState<boolean>(true);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [showPopupBorder, setShowPopupBorder] = useState<boolean>(false);
+    const [mouseX, setMouseX] = useState<number | null>(null);
+    const [sliderPosition, setSliderPosition] = useState(50);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleMove = (event) => {
+        if (!isDragging) return;
+
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+        const percent = Math.max(0, Math.min((x / rect.width) * 100, 100));
+
+        setSliderPosition(percent);
+    };
+
+    const handleMouseDown = () => {
+        setIsDragging(true);
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -23,7 +44,7 @@ const BackgroundRemoval: React.FC = () => {
             interval = setInterval(() => {
                 setShowPopupBorder(false);
                 setShowPopup(false);
-            }, 10000);
+            }, 8000);
         }
         return () => clearInterval(interval);
     }, [showPopup]);
@@ -43,8 +64,26 @@ const BackgroundRemoval: React.FC = () => {
         const file = acceptedFiles[0];
         if (file.type.split("/")[0] !== "image") {
             setShowPopup(true);
+            const timerElement = document.getElementById('timer');
+            if (!timerElement) {
+                console.error('Timer element not found');
+                return;
+            }
+            let width = 100;
+            const animationDuration = 8; // in seconds
+            const intervalTime = 100; // in milliseconds
+            const decrementPerInterval = (100 / animationDuration) * (intervalTime / 1000);
+
+            const interval = setInterval(() => {
+                width -= decrementPerInterval;
+                timerElement.style.width = `${width}%`;
+                if (width <= 0) {
+                    clearInterval(interval);
+                }
+            }, intervalTime);
             return;
         }
+
 
         setImage(URL.createObjectURL(file));
         setResultImage(null);
@@ -87,28 +126,38 @@ const BackgroundRemoval: React.FC = () => {
         return `${elapsedTime}s / ${(fileSize / 5166).toFixed(1)}s`;
     };
 
+
+
     return (
         <div className="flex flex-col items-center justify-center">
-            {showPopup && (
-                <div className={`fixed top-16 -right-50 transition-all duration-500 ${showPopupBorder ? 'right-1' : ''}`}>
-                    <div className="bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 p-4 mb-4 text-yellow-800 rounded-lg flex items-center relative">
-                        <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+
+                <div style={{display: `${showPopup ? 'block' : 'none'}`}}
+                    className={`fixed top-16 -right-50 transition-all duration-500 ${showPopupBorder ? 'right-1' : ''}`}>
+                    <div style={{borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+                        className="bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 p-4 mb-4 text-yellow-800 rounded-lg flex items-center relative">
+                        <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                         </svg>
                         <span className="sr-only">Warning</span>
                         <div className="ms-3 text-sm font-medium">
                             Please upload an image file.
                         </div>
-                        <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-yellow-50 text-yellow-500 rounded-lg focus:ring-2 focus:ring-yellow-400 p-1.5 hover:bg-yellow-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-yellow-300 dark:hover:bg-gray-700" onClick={() => setShowPopup(false)}>
+                        <button type="button"
+                                className="ms-auto -mx-1.5 -my-1.5 bg-yellow-50 text-yellow-500 rounded-lg focus:ring-2 focus:ring-yellow-400 p-1.5 hover:bg-yellow-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-yellow-300 dark:hover:bg-gray-700"
+                                onClick={() => setShowPopup(false)}>
                             <span className="sr-only">Close</span>
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 14 14">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                             </svg>
                         </button>
                     </div>
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gray-300 rounded-b-lg ${showPopupBorder ? 'transition-all duration-10000' : ''}`}></div>
+                    <div id={"timer"} className={`absolute bottom-3 left-0 w-full justify-end justify-self-end right-0 h-1 bg-red-400 transition-all duration-8000`}></div>
                 </div>
-            )}
+
             <div className="w-full min-w-1 max-w-lg p-6 bg-white rounded-lg shadow-md">
                 {showUploadSection && (
                     <Dropzone onDrop={handleDrop}>
@@ -156,24 +205,55 @@ const BackgroundRemoval: React.FC = () => {
                 )}
                 {resultImage && (
                     <div>
-                        <div className="w-full h-96 relative flex flex-col justify-center items-center border-2 border-gray-300 rounded-lg p-6 mb-6">
-                            <img
-                                src={resultImage}
-                                alt="Result"
-                                className="max-w-full max-h-full"
-                            />
+                        <div className="w-full relative" onMouseUp={handleMouseUp}>
+                            <div
+                                className="relative w-full max-w-[700px] aspect-[70/45] m-auto overflow-hidden select-none"
+                                onMouseMove={handleMove}
+                                onMouseDown={handleMouseDown}
+                            >
+                                <img
+                                    alt=""
+                                    draggable={false}
+                                    className="object-cover w-full h-full"
+                                    src={resultImage}
+                                />
+
+                                <div
+                                    className="absolute top-0 left-0 right-0 w-full max-w-[700px] aspect-[70/45] m-auto overflow-hidden select-none"
+                                    style={{clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`}}
+                                >
+                                    <img
+                                        alt=""
+                                        className="object-cover w-full h-full"
+                                        src={image}
+                                    />
+                                </div>
+                                <div
+                                    className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize outline-1 outline-amber-500"
+                                    style={{
+                                        left: `calc(${sliderPosition}% - 1px)`,
+                                    }}
+                                >
+                                    <div
+                                        className="">
+                                        <p id="bc" className='bg-black w-[50px] h-[50px] text-4xl text-white p-3 opacity-75 absolute rounded-full -left-1 top-[calc(50%)]'>
+                                            <p id="arrow" >&lt;&gt;</p>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="mt-4 justify-end text-end">
                             <input
                                 id="image"
                                 ref={imageRef}
                                 type="file"
-                                style={{ display: 'none' }}
+                                style={{display: 'none'}}
                                 onChange={(e) => handleDrop(Array.from(e.target.files || []))}
                             />
                             <button
                                 onClick={handleUploadNewImage}
-                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md ml-2 hover:bg-gray-400 transition duration-300 ease-in-out"
+                                className="px-4 mr-2 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md ml-2 hover:bg-gray-400 transition duration-300 ease-in-out"
                             >
                                 Upload New Image
                             </button>
